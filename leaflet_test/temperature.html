@@ -62,6 +62,26 @@ body {
 		{"loc":[110,50], "title":"white"}
 	];
 
+    function transform(src){
+        var ret=[];
+        for(i in src){
+            var tmp_obj={};
+            tmp_obj["title"]= src[i][1];
+
+            var tmp_loc = [];
+            tmp_loc[0] = src[i][3];
+            tmp_loc[1] = src[i][4];
+            tmp_obj["loc"] = tmp_loc;
+            tmp_obj["id"] = src[i][0];
+            tmp_obj["religion_id"] = src[i][2];
+
+
+            ret[i]= tmp_obj;
+
+        }
+        return ret;
+
+    }
 
             
 			function changeBoard(id) {
