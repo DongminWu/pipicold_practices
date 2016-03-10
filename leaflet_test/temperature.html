@@ -84,8 +84,10 @@ body {
 				crs : L.CRS.Simple
 			}).setView([ 111, 90 ], 5);
 
-	var markersLayer = new L.LayerGroup();	//layer contain searched elements
-	map.addLayer(markersLayer);
+	var my_layer = new L.TileLayer();	//layer contain searched elements
+	var my_markers_Layer = new L.LayerGroup();	//layer contain searched elements
+	map.addLayer(my_markers_Layer);
+	map.addLayer(my_layer);
 			var imageUrl = 'images/lksbig.jpg';
 			var vectorImageUrl = 'images/map2.jpg';
 			var imageBounds = [ [ 180, 0 ], [ 0, 180 ] ];
@@ -102,19 +104,45 @@ body {
                 popupAnchor : [ 13, 8 ]
             });
 
-	var controlSearch = new L.Control.Search({layer: markersLayer, initial: false, position:'topright'});
+
+	function localData(text, callResponse)
+	{
+		//here can use custom criteria or merge data from multiple layers
+
+		callResponse(fake_data);
+
+		return {	//called to stop previous requests on map move
+			abort: function() {
+				console.log('aborted request:'+ text);
+			}
+		};
+	};
+
+
+
+	var controlSearch = new L.Control.Search({sourceData:localData, initial: false, position:'topright'});
 
 	map.addControl( controlSearch );
 
+        controlSearch.on('search_locationfound',function(e){
+                        console.log(e.latlng);
+                var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+e.text+'</a>');
+                var marker = new L.Marker(e.latlng, {title: e.text} );//se property searched
+		marker.bindPopup(my_popup);
+		my_markers_Layer.addLayer(marker);
+                        });
+
 	////////////populate map with markers from sample data
+/*
 	for(i in fake_data) {
                 var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[i].title+'</a>');
 		var title = fake_data[i].title,	//value searched
 			loc = fake_data[i].loc;		//position found
 			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
 		marker.bindPopup(my_popup);
-		markersLayer.addLayer(marker);
+		my_layer.addLayer(marker);
 	}
+        */
             /*
                 for (each in fake_data)
                 {
