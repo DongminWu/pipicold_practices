@@ -5,6 +5,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="leaflet.css" />
 <link rel="stylesheet" href="leaflet.label.css" />
+<link rel="stylesheet" href="leaflet-search.css" />
 <style type="text/css">
 body {
 	margin: 0;
@@ -44,9 +45,7 @@ body {
 <script src="leaflet.js"></script>
 <script src="leaflet.label.js"></script>
 <script src="leaflet.ajax.min.js"></script>
-</head>
-<body>
-	<div class="container">
+<script src="leaflet-search.js"></script> </head> <body> <div class="container">
 		<div class="mainhead">
 			<table style="position: absolute;right:20px;top:4px;height:25px;cursor:pointer;" cellpadding="0" cellspacing="0">
 				<tr>
@@ -57,21 +56,14 @@ body {
 		</div>
 		<div id="map" class="main"></div>
 		<script>
-            var fake_data = [
-                {
-                    name: "dongmin",
-                    x : 50,
-                    y : 40
-                },
-                {
-                    name: "mars",
-                    x : 40,
-                    y : 60
-                }
+	var fake_data = [
+		{"loc":[81,40], "title":"black"},
+		{"loc":[100,60], "title":"red"},
+		{"loc":[110,50], "title":"white"}
+	];
 
 
             
-            ];
 			function changeBoard(id) {
 				if (id == 'dt') {
 					document.getElementById('dt').style.backgroundColor = '#E6EDF1';
@@ -92,6 +84,8 @@ body {
 				crs : L.CRS.Simple
 			}).setView([ 111, 90 ], 5);
 
+	var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	map.addLayer(markersLayer);
 			var imageUrl = 'images/lksbig.jpg';
 			var vectorImageUrl = 'images/map2.jpg';
 			var imageBounds = [ [ 180, 0 ], [ 0, 180 ] ];
@@ -107,16 +101,29 @@ body {
 				iconUrl : 'images/temperature2.png',
                 popupAnchor : [ 13, 8 ]
             });
-            var my_popup = L.popup({closeButton:false}).setContent('<a href="https://www.google.com">Supreme!</a>');
-            L.marker([110,90], {icon : temperatureIcon}).bindPopup(my_popup).addTo(map);
 
-            for (each in fake_data)
-{
-            var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[each].name+'</a>');
-            L.marker([fake_data[each].x,fake_data[each].y], {icon : temperatureIcon}).bindPopup(my_popup).addTo(map);
-    
+	var controlSearch = new L.Control.Search({layer: markersLayer, initial: false, position:'topright'});
 
-}
+	map.addControl( controlSearch );
+
+	////////////populate map with markers from sample data
+	for(i in fake_data) {
+                var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[i].title+'</a>');
+		var title = fake_data[i].title,	//value searched
+			loc = fake_data[i].loc;		//position found
+			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
+		marker.bindPopup(my_popup);
+		markersLayer.addLayer(marker);
+	}
+            /*
+                for (each in fake_data)
+                {
+                        var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[each].name+'</a>');
+                        L.marker([fake_data[each].x,fake_data[each].y], {icon : temperatureIcon}).bindPopup(my_popup).addTo(map);
+
+
+                }
+                */
 /*
 			L.Util.ajax("/forestry/sys/mark/getSensorLastData").then(function(data) {
 				for (var i = 0; i < data.length; i++) {
