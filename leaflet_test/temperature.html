@@ -56,135 +56,133 @@ body {
 		</div>
 		<div id="map" class="main"></div>
 		<script>
-	var fake_data = [
-		{"loc":[81,40], "title":"black"},
-		{"loc":[100,60], "title":"red"},
-		{"loc":[110,50], "title":"white"}
-	];
 
-    function transform(src){
+
+function transform(src){
         var ret=[];
         for(i in src){
-            var tmp_obj={};
-            tmp_obj["title"]= src[i][1];
+                var tmp_obj={};
+                tmp_obj["title"]= src[i][1];
 
-            var tmp_loc = [];
-            tmp_loc[0] = src[i][3];
-            tmp_loc[1] = src[i][4];
-            tmp_obj["loc"] = tmp_loc;
-            tmp_obj["id"] = src[i][0];
-            tmp_obj["religion_id"] = src[i][2];
+                var tmp_loc = [];
+                tmp_loc[0] = src[i][3];
+                tmp_loc[1] = src[i][4];
+                tmp_obj["loc"] = tmp_loc;
+                tmp_obj["id"] = src[i][0];
+                tmp_obj["religion_id"] = src[i][2];
 
 
-            ret[i]= tmp_obj;
+                ret[i]= tmp_obj;
 
         }
         return ret;
 
-    }
+}
 
-            
-			function changeBoard(id) {
-				if (id == 'dt') {
-					document.getElementById('dt').style.backgroundColor = '#E6EDF1';
-					document.getElementById('cl').style.backgroundColor = '#F4F3ED';
-					map.setView([ 111, 90 ], 2.7);
-					L.imageOverlay(imageUrl, imageBounds).addTo(map);
-				} else if (id == 'cl') {
-					document.getElementById('cl').style.backgroundColor = '#E6EDF1';
-					document.getElementById('dt').style.backgroundColor = '#F4F3ED';
-					map.setView([ 111, 90 ], 2.7);
-					L.imageOverlay(vectorImageUrl, imageBounds).addTo(map);
-				}
-			}
 
-			var map = L.map('map', {
-				maxZoom : 6,
-				minZoom : 2,
-				crs : L.CRS.Simple
-			}).setView([ 111, 90 ], 5);
+function changeBoard(id) {
+        if (id == 'dt') {
+                document.getElementById('dt').style.backgroundColor = '#E6EDF1';
+                document.getElementById('cl').style.backgroundColor = '#F4F3ED';
+                map.setView([ 111, 90 ], 2.7);
+                L.imageOverlay(imageUrl, imageBounds).addTo(map);
+        } else if (id == 'cl') {
+                document.getElementById('cl').style.backgroundColor = '#E6EDF1';
+                document.getElementById('dt').style.backgroundColor = '#F4F3ED';
+                map.setView([ 111, 90 ], 2.7);
+                L.imageOverlay(vectorImageUrl, imageBounds).addTo(map);
+        }
+}
 
-	var my_layer = new L.TileLayer();	//layer contain searched elements
-	var my_markers_Layer = new L.LayerGroup();	//layer contain searched elements
-	map.addLayer(my_markers_Layer);
-	map.addLayer(my_layer);
-			var imageUrl = 'images/lksbig.jpg';
-			var vectorImageUrl = 'images/map2.jpg';
-			var imageBounds = [ [ 180, 0 ], [ 0, 180 ] ];
+L.Util.ajax("./fake_data").then(function(data) {
+        var fake_data = {};
+        fake_data = transform(data);
+        console.log(fake_data);
+        var map = L.map('map', {
+                maxZoom : 6,
+                minZoom : 2,
+                crs : L.CRS.Simple
+        }).setView([ 111, 90 ], 5);
 
-			L.imageOverlay(imageUrl, imageBounds).addTo(map);
+        var my_layer = new L.TileLayer();	//layer contain searched elements
+        var my_markers_Layer = new L.LayerGroup();	//layer contain searched elements
+        map.addLayer(my_markers_Layer);
+        map.addLayer(my_layer);
+        var imageUrl = 'images/lksbig.jpg';
+        var vectorImageUrl = 'images/map2.jpg';
+        var imageBounds = [ [ 180, 0 ], [ 0, 180 ] ];
 
-			var LeafIcon = L.Icon.extend({
-				options : {
-				// shadowUrl : 'images/marker-shadow.png'
-				}
-			});
-			var temperatureIcon = new LeafIcon({
-				iconUrl : 'images/temperature2.png',
+        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+        var LeafIcon = L.Icon.extend({
+                options : {
+                        // shadowUrl : 'images/marker-shadow.png'
+                }
+        });
+        var temperatureIcon = new LeafIcon({
+                iconUrl : 'images/temperature2.png',
                 popupAnchor : [ 13, 8 ]
-            });
+        });
+        function localData(text, callResponse)
+        {
+                //here can use custom criteria or merge data from multiple layers
 
+                callResponse(fake_data);
 
-	function localData(text, callResponse)
-	{
-		//here can use custom criteria or merge data from multiple layers
+                return {	//called to stop previous requests on map move
+                        abort: function() {
+                                console.log('aborted request:'+ text);
+                        }
+                };
+        };
 
-		callResponse(fake_data);
+        var controlSearch = new L.Control.Search({sourceData:localData, initial: false, position:'topright'});
 
-		return {	//called to stop previous requests on map move
-			abort: function() {
-				console.log('aborted request:'+ text);
-			}
-		};
-	};
-
-
-
-	var controlSearch = new L.Control.Search({sourceData:localData, initial: false, position:'topright'});
-
-	map.addControl( controlSearch );
+        map.addControl( controlSearch );
 
         controlSearch.on('search_locationfound',function(e){
-                        console.log(e.latlng);
+                console.log(e.latlng);
                 var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+e.text+'</a>');
                 var marker = new L.Marker(e.latlng, {title: e.text} );//se property searched
-		marker.bindPopup(my_popup);
-		my_markers_Layer.addLayer(marker);
-                        });
+                marker.bindPopup(my_popup);
+                my_markers_Layer.addLayer(marker);
+        });
 
-	////////////populate map with markers from sample data
+});
+
+////////////populate map with markers from sample data
 /*
-	for(i in fake_data) {
-                var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[i].title+'</a>');
-		var title = fake_data[i].title,	//value searched
-			loc = fake_data[i].loc;		//position found
-			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
-		marker.bindPopup(my_popup);
-		my_layer.addLayer(marker);
-	}
-        */
-            /*
-                for (each in fake_data)
-                {
-                        var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[each].name+'</a>');
-                        L.marker([fake_data[each].x,fake_data[each].y], {icon : temperatureIcon}).bindPopup(my_popup).addTo(map);
-
-
-                }
-                */
+   for(i in fake_data) {
+   var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[i].title+'</a>');
+   var title = fake_data[i].title,	//value searched
+   loc = fake_data[i].loc;		//position found
+   marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
+   marker.bindPopup(my_popup);
+   my_layer.addLayer(marker);
+   }
+   */
 /*
-			L.Util.ajax("/forestry/sys/mark/getSensorLastData").then(function(data) {
-				for (var i = 0; i < data.length; i++) {
-					L.marker([ data[i][4], data[i][3] ], {
-						icon : temperatureIcon
-					}).bindPopup("名称：" + data[i][1], {
-						noHide : false
-					}).addTo(map);
-				}
-			});
-            */
+   for (each in fake_data)
+   {
+   var my_popup = L.popup({closeButton:false}).setContent('Name: <a href="https://www.google.com">'+fake_data[each].name+'</a>');
+   L.marker([fake_data[each].x,fake_data[each].y], {icon : temperatureIcon}).bindPopup(my_popup).addTo(map);
 
-			//var popup = L.popup({closeButton:false}).setLatLng([ 88, 88 ]).setContent('<p>Hello world!<br />This is a nice popup.</p>').openOn(map);
+
+   }
+   */
+/*
+   L.Util.ajax("/forestry/sys/mark/getSensorLastData").then(function(data) {
+   for (var i = 0; i < data.length; i++) {
+   L.marker([ data[i][4], data[i][3] ], {
+   icon : temperatureIcon
+   }).bindPopup("名称：" + data[i][1], {
+   noHide : false
+   }).addTo(map);
+   }
+   });
+   */
+
+//var popup = L.popup({closeButton:false}).setLatLng([ 88, 88 ]).setContent('<p>Hello world!<br />This is a nice popup.</p>').openOn(map);
 		</script>
 	</div>
 </body>
