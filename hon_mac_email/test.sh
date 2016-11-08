@@ -2,9 +2,10 @@
 
 echo "hello, I will checking HON house every minute"
 
+#DAY_16=YES
 DAY_16=FALSE
 HEART_INIT=YES
-#DAY_16=YES
+SLEEP_TIME=60
 
 HON_URL="http://87.106.84.161/hon/index.php"
 
@@ -14,14 +15,14 @@ echo $DAY_16
 
 #alert for any apartments
 #command of applying 11.16
+ 
+
+#echo "good luck" | mail -s "system start @`date`" wdm228@qq.com
 
 while true
 do
 
     echo "========curl start@`date`!!!===================="
-    echo
-    echo
-    echo 
 
     if [ $DAY_16 != "FALSE" ]
     then
@@ -40,6 +41,7 @@ do
 
     echo "========result ==========================="
 
+    echo
     echo "COMMAND_11_01:"$COMMAND_11_01
     echo "COMMAND_DA_DAP_ONLY_01:"$COMMAND_DA_DAP_ONLY_01
 
@@ -54,8 +56,8 @@ do
     if [ $COMMAND_11_01 = "0" ]
     then
         echo "COMMAND_11_01: TRUE [$COMMAND_11_01]"
-        echo "found house in 11.01, not sure its a double room"
-        echo "found house in 11.01, not sure its a double room  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.01 new house alert" wdm228@126.com
+        echo "找到房子了!在 11.01, not sure its a double room"
+#        echo "找到房子了!在 11.01, not sure its a double room  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.01 找到房子啦啦啦啦" wdm228@qq.com
 
     else
         echo "COMMAND_11_01: FALSE [$COMMAND_11_01]"
@@ -65,8 +67,8 @@ do
     if [ $COMMAND_DA_DAP_ONLY_01 = "0" ]
     then
         echo "COMMAND_DA_DAP_ONLY_01: TRUE [$COMMAND_DA_DAP_ONLY_01]"
-        echo "found house in 11.01, DA !!!!"
-        echo "found house in 11.01, DA !!!!  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.01 DAAAAAAAA alert" wdm228@126.com
+        echo "找到房子了!在 11.01, DA !!!!"
+        echo "找到房子了!在 11.01, DA !!!!  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.01 DA" wdm228@qq.com
 
     else
         echo "COMMAND_DA_DAP_ONLY_01: FALSE [$COMMAND_DA_DAP_ONLY_01]"
@@ -80,7 +82,7 @@ do
         then
             echo "COMMAND_11_16: TRUE [$COMMAND_11_16]"
             echo "found house in 11.16, not sure its a double room"
-            echo "found house in 11.16, not sure its a double room  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.16 new house alert" wdm228@126.com
+            #echo "found house in 11.16, not sure its a double room  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.16 alert" wdm228@qq.com
 
         else
             echo "COMMAND_11_16: FALSE [$COMMAND_11_16]"
@@ -91,15 +93,16 @@ do
         then
             echo "COMMAND_DA_DAP_ONLY_16: TRUE [$COMMAND_DA_DAP_ONLY_16]"
             echo "found house in 11.16, DA !!!!"
-            echo "found house in 11.16, DA !!!!  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.16 DAAAAAAAA alert" wdm228@126.com
+            echo "found house in 11.16, DA !!!!  URL: http://87.106.84.161/hon/index.php    " | mail -s "11.16 DA" wdm228@qq.com
 
         else
             echo "COMMAND_DA_DAP_ONLY_16: FALSE [$COMMAND_DA_DAP_ONLY_01]"
         fi
     fi
 
-    echo "========result ended@`date`======================"
 
+    echo
+    echo "========result ended@`date`======================"
 
 
     
@@ -109,19 +112,26 @@ do
     echo "HEART_INIT: "$HEART_INIT
     if [ $HEART_INIT = "YES" ]
     then
-        if [ $HEART = "30" ]
+        if [ $HEART = "50" ]
         then
-            echo "1 hour heart beats"
-            echo "1 hour heart beats  URL: http://87.106.84.161/hon/index.php    " | mail -s "heart beating" wdm228@126.com
+            echo "1 hour heart beats @ `date`"
+            echo "1 hour 心跳  URL: http://87.106.84.161/hon/index.php    " | mail -s "`date`的心跳yoyoyo" wdm228@qq.com
             HEART_INIT=FALSE
         fi
     fi
-    if [ $HEART = "31" ]
+    if [ $HEART = "51" ]
     then
-        HEART_INIT=TRUE
+        HEART_INIT=YES
     fi
 
-    sleep 5
+    echo 
+    echo 
+    echo 
+    echo 
+    echo 
+    echo 
+    echo 
+    sleep 60
 
 
 done

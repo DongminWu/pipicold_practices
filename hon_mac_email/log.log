@@ -1,0 +1,23 @@
+hello, I will checking HON house every minute
+FALSE
+========curl start@Fri Oct 14 13:10:14 CEST 2016!!!====================
+========curl ended@!!!====================
+========result ===========================
+
+COMMAND_11_01:1
+COMMAND_DA_DAP_ONLY_01:1
+
+
+COMMAND_11_01: FALSE [1]
+COMMAND_DA_DAP_ONLY_01: FALSE [1]
+
+========result ended@Fri Oct 14 13:10:15 CEST 2016======================
+HEART beats: 10
+HEART_INIT: YES
+
+
+
+
+
+
+
